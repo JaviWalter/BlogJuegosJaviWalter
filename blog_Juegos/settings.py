@@ -43,13 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # Apps externas
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'crispy_forms',
-    'crispy_bootstrap5',
-
     #Apps propias
 ]
 
@@ -61,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'blog_Juegos.urls'
@@ -151,32 +143,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #==============================================Configuraciones adicionales=============================================
 
-#Configuraciones allauth
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-#Configuraciones de cuenta
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFIATION = 'mandatory'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
-
-#Configuraciones crispy templates
-CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
-CRISPY_TEMPLATES_PACKS = 'bootstrap5'
-
-#Configuration email (para verificación de email)
-# Para desarrollo
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  
-# Para producción
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
