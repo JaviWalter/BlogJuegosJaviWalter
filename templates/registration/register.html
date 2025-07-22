@@ -1,12 +1,25 @@
-{% include static %}
-{% extends index.html %}
-{% block registro %}
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>Registro</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarse</button>
-</form>
+<title>{% block title %} Registro de Usuario {% endblock %}</title>
 
-{% enblock %}
+{% block contenido %}
+<center>
+    <form method="post" enctype="multipart/form-data" style="margin-top: 300px; margin-bottom: 100px;">
+        <h1>Registro de Usuario</h1>
+        <br>
+        <div class="messages">
+        {% for message in messages %}
+            <table {% if message.tags %} class="{{message.tag}}" {% endif %}>{{message}}</table>
+        {% endfor %}
+        </div>
+        <br>
+        {% csrf_token %}
+        <div class="container-fluid">
+            <table>{{form}}</table>
+        </div>
+        <br><br>
+        <button type="submit" class="btn btn-success btn-lg px-3">Registrar</button>
+    </form>
+</center>
+{% endblock %}
