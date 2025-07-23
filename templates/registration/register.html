@@ -5,7 +5,7 @@
 
 {% block contenido %}
 <center>
-    <form method="post" enctype="multipart/form-data" style="margin-top: 300px; margin-bottom: 100px;">
+    <form method="post" enctype="multipart/form-data" style="margin-top: 50px; margin-bottom: 100px;">
         <h1>Registro de Usuario</h1>
         <br>
         <div class="messages">
@@ -15,7 +15,7 @@
         </div>
         <br>
         {% csrf_token %}
-        <div class="container-fluid">
+        <div class="container">
             <table>{{form}}</table>
         </div>
         <br><br>

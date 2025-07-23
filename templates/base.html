@@ -12,32 +12,36 @@
 </head>
 
 <body>
-    <header class=" container">
+    <header class="container">
         <a class=" bg-primary text-center nav-link active" href="#">
             <img src="" alt="" style="max-width: 300px; margin: 30px;">
         </a>
-        <nav class="nav nav-pills flex-column flex-sm-row bg-secondary w-100">
-            <ul class="nav justify-content-center  ">
+        <div class="d-flex justify-content-start">
+            <ul class="nav nav-underline">
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'home' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
+                    <a class="nav-link {% if request.path == '/users/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
                 </li>
+            </ul>
+        </div>
+        <div class="d-flex justify-content-end">
+            <ul class="nav nav-underline">
                 {% if user.is_authenticated %}
-                <li class="nav-item ms-auto">
+                <li class="nav-item">
                     <form action="{% url 'apps.users:logout' %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn nav-link" href="">Logout</button>
+                        <button type="submit" class="btn nav-link btn-danger" href="">Logout</button>
                     </form>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
+                    <a class="nav-link {% if request.path == '/users/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
                 </li>
                 {% endif %}
             </ul>
-        </nav>
+        </div>
     </header>
     <main>
 
