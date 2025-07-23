@@ -19,13 +19,13 @@
         <nav class="nav nav-pills flex-column flex-sm-row">
             <ul class="nav justify-content-center  ">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" aria-current="page">Active link</a>
+                    <a class="nav-link" {% if request %} {% endif %}>Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled link</a>
+                    <a class="nav-link" href="#">Disabled link</a>
                 </li>
             </ul>
         </nav>
