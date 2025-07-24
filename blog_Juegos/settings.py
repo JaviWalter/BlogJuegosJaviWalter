@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #=======Apps locales=========
+    'blog_juegos',
+    'apps.games',
+    'apps.comments',
+    'apps.news',
     'apps.users',
 ]
 
@@ -81,18 +85,24 @@ WSGI_APPLICATION = 'blog_juegos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-NAME_DB = os.getenv('NAME_DB')
-USER_DB = os.getenv('USER_DB')
-PASSWORD_DB = os.getenv('PASSWORD_DB')
+#NAME_DB = os.getenv('NAME_DB')
+#USER_DB = os.getenv('USER_DB')
+#PASSWORD_DB = os.getenv('PASSWORD_DB')
 
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': NAME_DB,
-        'USER': USER_DB,
-        'PASSWORD': PASSWORD_DB,
-        'PORT': '3307'
+        'NAME': os.getenv('NAME_DB'),
+        'USER': os.getenv('USER_DB'),
+        'PASSWORD': os.getenv('PASSWORD_DB'),
+        'HOST' : os.getenv('HOST_DB'), 
+        'PORT': os.getenv('PORT_DB'),
+        'OPTIONS': { #Con esto charset soporto emojis
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
+        'CONN_MAX_AGE': 600, #las conexiones a BD no se cierran automaticamente despues de cada consulta sino que quedan 10 minutos abiertas, de esta forma mejoro la eficiencia del programa
     }
 }
 
