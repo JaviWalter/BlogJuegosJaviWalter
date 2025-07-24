@@ -1,3 +1,6 @@
 
+
+
 .env
-__pycache__/
+blog_juegos/__pycache__/
+apps/users/__pycache__/
