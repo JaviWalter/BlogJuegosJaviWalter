@@ -2,5 +2,5 @@
 
 
 .env
-blog_juegos/__pycache__/
-apps/../__pycache__/
+manage.py
+media/

@@ -42,11 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #=======Apps de terceros=======
+
     'crispy_forms',
     'crispy_bootstrap5',
 
     #=======Apps locales=========
-    'blog_Juegos',
+
     'apps.games',
     'apps.comments',
     'apps.news',
@@ -63,7 +64,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'blog_Juegos.urls'
+ROOT_URLCONF = 'blog_juegos.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'blog_Juegos.wsgi.application'
+WSGI_APPLICATION = 'blog_juegos.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -91,7 +92,7 @@ DATABASES = {
         'NAME': os.getenv('NAME_DB'),
         'USER': os.getenv('USER_DB'),
         'PASSWORD': os.getenv('PASSWORD_DB'),
-        'HOST' : os.getenv('HOST_DB'), 
+        'HOST': os.getenv('HOST_DB'), 
         'PORT': os.getenv('PORT_DB'),
         'OPTIONS': { #Con esto charset soporto emojis
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
