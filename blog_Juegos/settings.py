@@ -85,11 +85,6 @@ WSGI_APPLICATION = 'blog_Juegos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-#NAME_DB = os.getenv('NAME_DB')
-#USER_DB = os.getenv('USER_DB')
-#PASSWORD_DB = os.getenv('PASSWORD_DB')
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -162,7 +157,7 @@ AUTH_USER_MODEL = 'users.User'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-SITE_NAME = 'Blog-juegos'
+SITE_NAME = 'Blog_juegos'
 
 #==Configuración de reinicio de contraseña
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
