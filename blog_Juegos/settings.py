@@ -152,6 +152,8 @@ AUTH_USER_MODEL = 'users.User'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
+SITE_NAME = 'Blog-juegos'
+
 #==Configuración de reinicio de contraseña
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
