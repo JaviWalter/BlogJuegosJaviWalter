@@ -11,26 +11,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
 </head>
 
-<body>
-    <header>
-        <a class="flex-sm-fill text-center nav-link active" href="#">
+<body class="container-fluid bg-secondary-subtle">
+    <header class="container-fluid">
+        <a class=" bg-secondary text-center nav-link active" href="#">
             <img src="" alt="" style="max-width: 300px; margin: 30px;">
         </a>
-        <nav class="nav nav-pills flex-column flex-sm-row">
-            <ul class="nav justify-content-center  ">
+        <div class="d-flex bg-primary-subtle justify-content-start px-3 py-2">
+            <ul class="nav nav-underline">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" aria-current="page">Active link</a>
+                    <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'home' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled link</a>
+                    <a class="nav-link {% if request.path == '/users/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
                 </li>
             </ul>
-        </nav>
+        </div>
+        <div class="d-flex bg-primary-subtle justify-content-end px-3 py-2">
+            <ul class="nav nav-underline">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <form action="{% url 'apps.users:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn nav-link btn-danger" href="">Logout</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/users/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
     </header>
-    <main>
+    <main class="container-flid">
 
     {% block contenido %}
 
