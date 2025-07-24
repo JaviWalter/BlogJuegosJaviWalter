@@ -31,9 +31,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'users.User'
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #=======Apps de terceros=======
+    'crispy_forms',
+    'crispy_bootstrap5',
 
     #=======Apps locales=========
     'apps.users',
@@ -76,7 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'blog_juegos.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -143,3 +143,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#================================================= Otras Configuraciones=====================================================
+
+
+AUTH_USER_MODEL = 'users.User'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+#==Configuración de reinicio de contraseña
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'correo_correo@gmail.com'
+EMAIL_HOST_PASSWORD = '1234568455'

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 <title>{% block title %} Iniciar Sesión {% endblock %}</title>
 
@@ -14,9 +15,10 @@
         {% endfor %}
         </div>
         <br>
+        
         {% csrf_token %}
-        <div class="container">
-            <table>{{form}}</table>
+        <div class="container w-25">
+            {{ form | crispy }}
             <br>
             <a href="{% url 'apps.users:register' %}" style="color: black;">Todavía no estas registrado? Registrate</a>
             <br><br>
