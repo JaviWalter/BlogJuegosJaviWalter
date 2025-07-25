@@ -4,3 +4,4 @@
 .env
 manage.py
 media/
+blog_juegos/
