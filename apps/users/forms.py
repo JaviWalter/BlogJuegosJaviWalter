@@ -1,5 +1,6 @@
 from django import forms
 from .models import User
+from django.db import transaction
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 
@@ -7,7 +8,15 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'password1', 'password2', 'email', 'imagen']
+        fields = ['username', 'password1', 'password2', 'nombre', 'apellido', 'fecha_nacimiento', 'email', 'imagen']
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_superuser = False
+        user.is_staff = False
+        user.save()
+        return user
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Nombre de usuario')

@@ -1,34 +1,25 @@
-from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView
+
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.contrib import messages
-from django.shortcuts import redirect
-from django.urls import reverse
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy, reverse
 from .forms import RegisterUserForm
+from .models import User
 
 
-class RegisterUser(CreateView):
+class RegisterUserView(CreateView):
+    model = User
     template_name = 'registration/register.html'
     form_class = RegisterUserForm
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Registro de usuario exitoso. Por favor iniciar sesión.')
-        form.save()
-
-        return redirect('apps.users:register')
-
-class LoginUser(LoginView):
-    template_name = 'registration/login.html'
-    
-    def get_success_url(self):
-        messages.success(self.request, 'Login exitoso.')
-
-        return reverse('apps.users:login')
+    success_url = reverse_lazy('index')
 
 
-class LogoutUser(LogoutView):
-    template_name = 'registration/logout.html'
+def ListUsers(request):
+    usuarios = User.objects.all()
+    template_name = 'registration/list_users.html'
+    context = {
+        'usuarios' : usuarios
+    }
+    return render(request, template_name, context)
 
-    def get_success_url(self):
-        messages.success(self.request, 'Logout exitoso.')
 
-        return reverse('apps.users:logout')
