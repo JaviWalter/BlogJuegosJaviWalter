@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_bootstrap5 %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-center">Listado de Usuarios</h1>
+    <hr><br>
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g3">
+        {% for item in usuarios %}
+        <div class="col p-2">
+            <div class="card border-success h-75">
+                <img src="{{ item.imagen.url }}" class="card-img-top">
+                <div class="card-body text-dark">
+                    <h5 class="card-title">Usuario: {{ item.username }}</h5>
+                    <p class="card-text">Nombre: {{ item.nombre }}</p>
+                    <p class="card-text">Apellido: {{ item.apellido }}</p>
+                    <p class="card-text">Email: {{ item.correo }}</p>
+                </div>
+                <div class="card-footer border-success">
+                    <a href="#" class="btn btn-primary">Eliminar {{item.username}}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
