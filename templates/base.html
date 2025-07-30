@@ -19,7 +19,7 @@
         <div class="d-flex bg-primary-subtle justify-content-start px-3 py-2">
             <ul class="nav nav-underline">
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'home' %}">Inicio</a>
+                    <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'index' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/users/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
