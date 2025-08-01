@@ -1,11 +1,12 @@
 
 from django.http import Http404
 from django.views.generic import CreateView, UpdateView, DeleteView
+from allauth.account.views import PasswordResetView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm, CustomPasswordResetForm
 from .models import User
 
 
@@ -39,3 +40,8 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Perfil actualizado correctamente.')
         return super().form_valid(form)
+    
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'registration/password_reset_form.html'

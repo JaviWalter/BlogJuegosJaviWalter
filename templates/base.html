@@ -35,12 +35,13 @@
                         <button type="submit" class="btn nav-link btn-danger" href="">Logout</button>
                     </form>
                 </li>
-                <li class="nav-item">
-                    <a class="btn nav-link btn-primary" href="{% url 'apps.users:password_reset' %}">Cambiar contraseña</a>
-                </li>
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/users/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn nav-link btn-primary" href="{% url 'apps.users:password_reset' %}">
+                        Olvidaste tu contraseña?</a>
                 </li>
                 {% endif %}
             </ul>
