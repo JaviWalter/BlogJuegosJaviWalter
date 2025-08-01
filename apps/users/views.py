@@ -12,14 +12,14 @@ from .models import User
 
 class RegisterUserView(CreateView):
     model = User
-    template_name = 'registration/register.html'
+    template_name = 'account/signup.html'
     form_class = RegisterUserForm
     success_url = reverse_lazy('index')
 
 
 def list_users(request):
     usuarios = User.objects.all()
-    template_name = 'registration/list_users.html'
+    template_name = 'users/list_users.html'
     context = {
         'usuarios' : usuarios
     }
@@ -28,7 +28,7 @@ def list_users(request):
 class UpdateUserView(LoginRequiredMixin, UpdateView):
     model = User
     fields = ['nombre', 'apellido', 'correo', 'fecha_nacimiento', 'imagen']
-    template_name = 'registration/register.html'
+    template_name = 'account/signup.html'
     success_url = reverse_lazy('index')
 
     def dispatch(self, request, *args, **kwargs):
@@ -44,4 +44,4 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
 
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
-    template_name = 'registration/password_reset_form.html'
+    template_name = 'account/password_reset.html'

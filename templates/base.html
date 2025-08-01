@@ -22,7 +22,7 @@
                     <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'index' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/users/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
+                    <a class="nav-link {% if request.path == '/users/signup/' %} active {% endif %}" href="{% url 'apps.users:signup' %}">Registrase</a>
                 </li>
             </ul>
         </div>
@@ -40,7 +40,7 @@
                     <a class="nav-link {% if request.path == '/users/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn nav-link btn-primary" href="{% url 'apps.users:password_reset' %}">
+                    <a class="nav-link {% if request.path == '/users/password_reset/' %} active {% endif %}" href="{% url 'apps.users:password_reset' %}">
                         Olvidaste tu contraseña?</a>
                 </li>
                 {% endif %}
