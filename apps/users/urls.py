@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import RegisterUserView, UpdateUserView, list_users, CustomPasswordResetView
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='account/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='account/logout.html'), name='logout'),
     path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
+    path('', include('allauth.urls')),
     path('update_user/<int:pk>', UpdateUserView.as_view(), name='update_user'),
     path('list_users', list_users, name='list_users'),
 ]
