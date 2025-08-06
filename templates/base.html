@@ -22,6 +22,9 @@
                     <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'index' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {% if '/blog' in request.path %} active {% endif %}" href="{% url 'apps.blog:lista_articulos' %}">Blog</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {% if request.path == '/users/signup/' %} active {% endif %}" href="{% url 'apps.users:signup' %}">Registrase</a>
                 </li>
             </ul>
@@ -44,6 +47,10 @@
                         Olvidaste tu contraseña?</a>
                 </li>
                 {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if '/users/profile' in request.path %} active {% endif %}" href="{% url 'apps.users:profile' %}">Perfil</a>
+                </li>
+                
             </ul>
         </div>
     </header>
@@ -56,7 +63,7 @@
     </main>
     <footer id="sticky-footer" class="flex-shrink-0 bg-dark py-4 text-white-50">
         <div class="container text-center">
-            <small>Copyright &copy; Blog-Juegos</small>
+            <small>Copyright &#9400; Blog-Juegos &beta;&gamma; Grupo 1 - Comisión 5 </small>
         </div>
     </footer>
     <!-- Bootstrap JavaScript Libraries -->

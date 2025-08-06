@@ -1,6 +1,6 @@
 
 from django.http import Http404
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
 from allauth.account.views import PasswordResetView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -45,3 +45,7 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'account/password_reset.html'
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    #LoginRequiredMixin asegura que solo los usuarios autenticados puedan acceder a esta vista.
+    template_name = 'users/profile.html'

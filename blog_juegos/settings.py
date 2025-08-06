@@ -178,11 +178,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #================================================= Otras Configuraciones=====================================================
 
 # Añade estas configuraciones específicas de allauth
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Obliga verificación por email
 
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_LOGIN_METHODS = ['username_email']  # Métodos de login permitidos
+ACCOUNT_LOGIN_METHODS = ['username']  # Métodos de login permitidos
 
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']  # Campos obligatorios
 
