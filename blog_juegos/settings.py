@@ -34,6 +34,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = 'users.User'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -118,7 +120,6 @@ DATABASES = {
         'HOST': os.getenv('HOST_DB'), 
         'PORT': os.getenv('PORT_DB'),
         'OPTIONS': { #Con esto charset soporto emojis
-            'init_command': 'SET default_storage_engine=INNODB',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
         },
@@ -162,7 +163,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIR = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = 'staticfiles'
 
 # Default primary key field type
@@ -178,27 +179,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #================================================= Otras Configuraciones=====================================================
 
 # Añade estas configuraciones específicas de allauth
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Obliga verificación por email
 
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_LOGIN_METHODS = ['username']  # Métodos de login permitidos
+ACCOUNT_AUTHENTICATION_METHODS = 'username_email'
 
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']  # Campos obligatorios
-
-AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = 'apps.users:login'
 
 PASSWORD_RESET_URL = 'apps.users:password_reset'
-
-LOGIN_REDIRECT_URL = reverse_lazy('index')
-
-LOGOUT_REDIRECT_URL = reverse_lazy('index')
-
-ACCOUNT_LOGOUT_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 ACCOUNT_LOGOUT_ON_GET = True
 
@@ -209,6 +201,13 @@ SITE_NAME = 'Blog_juegos'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Blog_Juegos] '
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http' if DEBUG else 'https'
+
+#================Urls de redirección===========
+LOGIN_REDIRECT_URL = reverse_lazy('index')
+
+LOGOUT_REDIRECT_URL = reverse_lazy('index')
+
+ACCOUNT_LOGOUT_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 #=============Configuración de reinicio de contraseña==============
 
