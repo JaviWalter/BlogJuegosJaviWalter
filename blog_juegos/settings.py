@@ -59,8 +59,6 @@ INSTALLED_APPS = [
 
     'apps.blog',
     'apps.games',
-    'apps.comments',
-    'apps.news',
     'apps.users',
 ]
 
