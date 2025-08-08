@@ -1,6 +1,8 @@
 from django.db import models
-from django.utils import timezone
-from django.contrib.auth.models import User # Importamos el modelo de Usuario de Django
+from django.dispatch import receiver
+from django.db.models import Avg
+from django.db.models.signals import post_save, post_delete
+
 from django.conf import settings
 
 # Create your models here.
@@ -98,8 +100,8 @@ class Puntuacion(models.Model):
         return f"{self.usuario.username} puntuó {self.juego.titulo} con {self.valor}"
 
 
-class Comentario(models.Model):
-    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, verbose_name="Juego")
+class ComentarioJuego(models.Model):
+    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, verbose_name="Juego", related_name='comentarios')
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -110,6 +112,7 @@ class Comentario(models.Model):
     aprobado = models.BooleanField(default=False, verbose_name="Aprobado para Publicación")
 
     class Meta:
+        db_table = 'games_comentariojuego'
         verbose_name = "Comentario"
         verbose_name_plural = "Comentarios"
         ordering = ['-fecha_creacion'] 
@@ -117,3 +120,9 @@ class Comentario(models.Model):
     def __str__(self):
         return f"Comentario de {self.usuario.username} en {self.juego.titulo}"
     
+@receiver([post_save, post_delete], sender=Puntuacion)
+def actualizar_promedio(sender, instance, **kwargs):
+    juego = instance.juego
+    promedio = juego.puntuacion_set.aggregate(avg_puntuacion=Avg('valor'))['avg_puntuacion'] or 0.00
+    juego.promedio_puntuacion = round(promedio, 2)
+    juego.save(update_fields='promedio_puntuacion')

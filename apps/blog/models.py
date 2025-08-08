@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 # Create your models here.
@@ -72,5 +73,23 @@ class Articulo(models.Model):
     def __str__(self):
         return self.titulo
 
+class ComentarioArticulo(models.Model):
+    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE, verbose_name="Articulo", related_name='comentarios')
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Usuario"
+    )
+    texto = models.TextField(verbose_name="Comentario")
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    aprobado = models.BooleanField(default=False, verbose_name="Aprobado para Publicación")
 
+    class Meta:
+        verbose_name = "Comentario"
+        verbose_name_plural = "Comentarios"
+        ordering = ['-fecha_creacion'] 
+
+    def __str__(self):
+        return f"Comentario de {self.usuario.username} en {self.articulo.titulo}"
+    
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Plataforma, Genero, Juego, Puntuacion, Comentario
+from .models import Plataforma, Genero, Juego, Puntuacion, ComentarioJuego
 
 # Register your models here.
 
@@ -29,7 +29,7 @@ class PuntuacionAdmin(admin.ModelAdmin):
     date_hierarchy = 'fecha_creacion'
     raw_id_fields = ('juego', 'usuario')# Útil para seleccionar juego y usuario por ID
 
-@admin.register(Comentario)
+@admin.register(ComentarioJuego)
 class ComentarioAdmin(admin.ModelAdmin):
     list_display = ('id', 'juego', 'usuario', 'fecha_creacion', 'aprobado')
     list_filter = ('aprobado', 'fecha_creacion')

@@ -65,7 +65,7 @@
                                 <li><a href="{% url 'apps.users:profile' %}" class="dropdown-item">
                                     <i class="fas fa-user"></i>Perfil
                                 </a></li>
-                                <li><a href="#" class="dropdown-item">
+                                <li><a href="{% url 'apps.users:update_user' pk=user.pk %}" class="dropdown-item">
                                     <i class="fas fa-edit"></i>Editar perfil
                                 </a></li>
                                 {% if user.es_colaborador or user.is_superuser %} 
@@ -96,7 +96,7 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a href="#" class="nav-link {% if request.path == '/users/signup/' %}active{% endif %}">
+                            <a href="{% url 'apps.users:signup' %}" class="nav-link {% if request.path == '/users/signup/' %}active{% endif %}">
                                 <i class="fas fa-user-plus"></i>Registrarse
                             </a>
                         </li>
@@ -136,7 +136,7 @@
                 </div>
             </div>
             <hr>
-            <small>&copy; Blog-Juegos &beta;&gamma; Grupo 1 - Comisión 5 </small>
+            <small>Copyright &copy; {% now 'Y' %} Blog-Juegos &beta;&gamma; Grupo 1 - Comisión 5 </small>
         </div>
     </footer>
     <!-- Bootstrap JavaScript Libraries -->
