@@ -8,14 +8,14 @@
     <h2 class="text-center mb-4">Ultimos Juegos</h2>
     <div id="juegosCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            {% for juegos in ultimos_juegos %}
+            {% for juego in ultimos_juegos %}
                 <button type="button" data-bs-target="juegosCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
                 {% if forloop.first %}class="active" aria-current="true"{% endif %} 
                 aria-label="Slide {{ foorloop.counter }}"></button>
             {% endfor %}
         </div>
         <div class="carousel-inner rounded">
-            {% for juegos in ultimos_juegos %}
+            {% for juego in ultimos_juegos %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 <img src="{{ juego.imagen_portada.url|default:'https://placehold.co/800x400/FABD43/FA0101?text=Imagen+no+disponible&font=montserrat' }}" alt="{{ juego.titulo }}" style="max-height: 400px; object-fit: cover;">
                 <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
@@ -121,7 +121,7 @@
         <a href="{% url 'apps.blog:lista_articulos' %}" class="btn btn-outline-primary">Ver Todos</a>
     </div>
     <div class="row">
-        {% for artiulos in ultimos_articulos %}
+        {% for artiulo in ultimos_articulos %}
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="row g-0">

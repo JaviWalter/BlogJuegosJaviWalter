@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
-{% block title %}
-    {{ object.titulo }}
-{% endblock title %}
+<title>{% block title %}{{ object.titulo }}{% endblock %}</title>
 
 {% block contenido %}
 <div class="container mt-4">
@@ -29,7 +28,7 @@
 
         <hr>
 
-        <div class="articulo-content">
+        <div class="contenido_articulo">
             <!-- Lógica para mostrar la imagen (prioriza la URL sobre el archivo) -->
             {% if object.imagen_url %}
                 <img src="{{ object.imagen_url }}" alt="{{ object.titulo }}" class="articulo-imagen img-fluid rounded mb-3">
@@ -42,9 +41,64 @@
             <!-- El contenido del artículo, ahora con el filtro 'linebreaks' para mantener los saltos de línea -->
             {{ object.contenido|linebreaks }}
         </div>
+    
+        <!-- Sección comentario -->
+        <div class="mt-5">
+            <h3>Comentarios</h3>
+            <hr>
+            <center>
+            {% if user.is_authentiated %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Deja tu comentario</h5>
+                    <form action="{% url 'apps.blog:detalle_articulo' pk=object.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="articulo_id" value="{{ object.id }}">
+                        <div class="mb-3">
+                            <textarea name="texto" class="form-control" rows="4" 
+                            placeholder="Escribe tu comentario aqui..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <p>Debes iniciar sesión para dejar tu comentario</p>
+                <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a>
+            </div>
+            </center>
+            {% endif %}
         
-        <!-- Enlace para volver a la lista de artículos -->
-        <a href="{% url 'blog:lista_articulos' %}" class="btn btn-secondary mt-3">&larr; Volver a los artículos</a>
+        
+            <!-- Lista de comentarios -->
+            <div class="lista_comentarios">
+                {% for comentario in object.comentarios.all %}
+                    {% if comentario.aprobado or comentario.user == user %}
+                    <div class="card mb-3 {% if not comentario.aprobado %}bg-ligth{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex juestify-content-between">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ comentario.usuario.username }}
+                                    <small>{{ comentario.fecha_creacion|date:'d M Y H:i' }}</small>
+                                </h6>
+                                {% if not comentario.aprobado %}
+                                    <span class="badge bg-warning text-dark">Pendiente de aprobación</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-text">{{ comentario.texto|linebreaks }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                <div class="alert alert-secondary">
+                    No hay comentarios aún. Se el primero en comentar.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{% url 'apps.blog:lista_articulos' %}" class="btn btn-secondary">&larr; Volver a los articulos</a>
     </div>
 </div>
+
 {% endblock contenido %}

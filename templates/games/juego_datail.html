@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<title>{% block title %}{{ object.titulo }}{% endblock %}</title>
+
+{% block contenido %}
+    
+<div class="container-mt-4">
+    <div class="card shadow-sm p-4">
+        <h1>{{ object.title }}</h1>
+        <p class="card-text">
+            <small class="text-muted">
+                Lanzado el {{ object.fecha_lanzamiento|date:'d M Y' }}
+                {% if object.desarrollador %}
+                    por {{ object.desarrollador }}
+                {% endif %}
+                {% if object.editor %}
+                    - Editor: {{ object.editor }}
+                {% endif %}
+            </small>
+        </p>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                {% if object.imagen_portada %}
+                <img src="{{ object.imagen_portada.url }}" alt="{{ object.titulo }}" class="img-fluid rounded mb-3">
+                {% else %}
+                <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&font=montserrat" 
+                class="img-fluid rounded mb-3" alt="Sin imagen">
+                {% endif %}
+                <div class="mb-3">
+                    <h5>Plataformas</h5>
+                    {% for plataforma in object.plataformas.all %}
+                    <span class="badge bg-primary me-1">{{ plataforma.nombre }}</span>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <h5>Generos</h5>
+                    {% for genero in object.generos.all %}
+                    <span class="badge bg-secondary me-1">{{ genero.nombre }}</span>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <h5>Puntuación:</h5>
+                    <div class="display-4">
+                        {% if object.promedio_puntuacion > 0 %}
+                            {{ object.promedio_puntuacion|floatformat:1 }} / 5.0
+                        {% else %}
+                            Sin puntuaciones
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h3>Descripción</h3>
+                <p>{{ object.descripcion|linebreaks }}</p>
+                {% if object.viedeo_trailer_url %}
+                <div class="ratio ratio-16x9 mb-4">
+                    <iframe src="{{ object.video_trailer_url }}" title="{{ object.titulo }} - Trailer" allowfullscreen>
+                    </iframe>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-5">
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
