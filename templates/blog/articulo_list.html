@@ -3,6 +3,10 @@
 
 <title>{% block title %}Noticias{% endblock %}</title>
 
+{% block extra_css %}
+    <link rel="stylesheet" href="estilos_blog.css">
+{% endblock %}
+
 {% block contenido %}
 <div class="container mt-4">
     <h1 class="mb-4">Lista de Artículos</h1>

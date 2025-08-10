@@ -64,8 +64,97 @@
             </div>
         </div>
         <div class="mt-5">
+            <h3>Comentarios</h3>
+            <hr>
+            <center>
+            {% if user.is_authenticated %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Deja tu comentario</h5>
+                    <form action="{{ url 'apps.games:detalle_juego'}}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="juego_id" value="{{ object.id }}">
+                        <div class="mb-3">
+                            <textarea name="texto" class="form-control" rows="4"  required
+                            placeholder="Escribe tu comentario aqui..." ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                Debes <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a> para dejar tu comentario
+            </div>
+            </center>
+            {% endif %}
+
+            <!-- Lista de comentarios -->
+            <div class="lista_comentarios">
+                {% for comentario in object.comentarios.all %}
+                    {% if comentario.aprobado or comentario.user == user %}
+                    <div class="card mb-3 {% if not comentario.aprobado %}bg-ligth{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex juestify-content-between">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ comentario.usuario.username }}
+                                    <small>{{ comentario.fecha_creacion|date:'d M Y H:i' }}</small>
+                                </h6>
+                                {% if not comentario.aprobado %}
+                                    <span class="badge bg-warning text-dark">Pendiente de aprobación</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-text">{{ comentario.texto|linebreaks }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                <div class="alert alert-secondary">
+                    No hay comentarios aún. Se el primero en comentar.
+                </div>
+                {% endfor %}
+            </div>
+            {% if user.is_authenticated %}
+            <div class="mt-3">
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#puntuarJuego">Puntuar este juego</button>
+                {% if user.es_colaborador or user.is_superuser %}
+                    <a href="#" class="btn btn-warning">Editar</a>
+                    <a href="#" class="btn btn-danger">Eliminar</a>
+                {% endif %}
+            </div>
             
+            <div class="modal fade" id="puntuarJuego" tabindex="-1" aria-labelledby="puntuarJuegoLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="puntuacionJuegoLabel">Puntuar {{ object.titulo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'apps.games:puntuar_juego' pk=objecto.pk %}" method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="#puntuacion" class="form-label">Selecciona tu puntuación (1 - 5)</label>
+                                    <select name="valor" id="puntuacion" class="form-select" required>
+                                        <option value="" selected disabled>Selecciona...</option>
+                                        <option value="1">1 - Muy malo</option>
+                                        <option value="2">2 - Malo</option>
+                                        <option value="3">3 - Regular</option>
+                                        <option value="4">4 - Bueno</option>
+                                        <option value="5">5 - Excelente</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Enviar puntuación</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
+        <a href="{% url 'apps.games:lista_juegos' %}" class="btn btn-secondary">&larr; Volver a los juegos</a>
     </div>
 </div>
 

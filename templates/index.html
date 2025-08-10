@@ -17,7 +17,7 @@
         <div class="carousel-inner rounded">
             {% for juego in ultimos_juegos %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{{ juego.imagen_portada.url|default:'https://placehold.co/800x400/FABD43/FA0101?text=Imagen+no+disponible&font=montserrat' }}" alt="{{ juego.titulo }}" style="max-height: 400px; object-fit: cover;">
+                <img src="{% if juego.imagen_portada %}{{ juego.imagen_portada.url}}{% else %}{{ https://placehold.co/800x400/FABD43/FA0101?text=Imagen+no+disponible&font=montserrat }}{% endif %}" alt="{{ juego.titulo }}" style="max-height: 400px; object-fit: cover;">
                 <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
                     <h5>{{ juego.titulo }}</h5>
                     <p>{{juego.descripcion|truncatechars:100 }}</p>
@@ -94,12 +94,22 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ juego.titulo }}</h5>
                     <div class="mb-2">
-                        <span class="text-warning">
-                        {% with ''|center:juegos.promedio_puntuacion as range %}
-                            {% for _ in range %}★{% endfor %}
-                        {% endwith %}
-                        </span>
-                        <small>({{ juego.promedio_puntuacion|floatformat:1 }}/5.0)</small>
+                        {% if juego.promedio_puntuacion > 0 %} 
+                            <span class="text-warning">
+                            {% with ''|center:juego.promedio_puntuacion as range %}
+                                {% for _ in range %}★{% endfor %}
+                            {% endwith %}
+                            {% with ''|subtract:juego.promedio_puntucion as empty_stars %}
+                                {% if empty_stars > 0 %}
+                                    {% with ''|center:empty_stars as empty_range %}
+                                        {% for _ in range %}☆{% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                            </span>
+                            <small>({{ juego.promedio_puntuacion|floatformat:1 }}/5.0)</small>
+                        {% else %}
+                            <span class="text-muted">Sin puntuaciones aún</span>
+                        {% endif %}
                     </div>
                     <p class="card-text">{{ juego.descripcion|default:'Sin descripción'|truncatechars:100 }}</p>
                     <span class="badge bg-success">

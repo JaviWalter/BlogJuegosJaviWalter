@@ -6,22 +6,74 @@
 <title>{% block title %} Registro de Usuario {% endblock %}</title>
 
 {% block contenido %}
-<center>
-    <form method="post" enctype="multipart/form-data" style="margin-top: 50px; margin-bottom: 100px;">
-        <h1>Registro de Usuario</h1>
-        <br>
-        <div class="messages">
-        {% for message in messages %}
-            <table {% if message.tags %} class="{{message.tag}}" {% endif %}>{{message}}</table>
-        {% endfor %}
+
+<div class="container mb-5 mt-5">
+    
+    <div class="row justify-content center">
+        <center>
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Registro de Usuario</h3>
+                </div>
+                <div class="card-body bg-dark-subtle">
+                    {% if messages %}
+                    <div class="alert messages">
+                        {% for message in messages %}
+                        <div class="alert alert- alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.username|as_crispy_field:"bootstrap5" }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.email|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.nombre|as_crispy_field:"bootstrap5" }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.apellido|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.password1|as_crispy_field:"bootstrap5" }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.password2|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.fecha_nacimiento|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                                {{ form.imagen|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>¿Ya tienes cuenta? <a href="{% url 'apps.users:login' }">Inicia sesión aquí</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <br>
-        {% csrf_token %}
-        <div class="container w-50">
-            {{ form | crispy }}
-        </div>
-        <br><br>
-        <button type="submit" class="btn btn-success btn-lg px-3">Registrar</button>
-    </form>
-</center>
+        </center>
+    </div>
+    
+</div>
+
 {% endblock %}

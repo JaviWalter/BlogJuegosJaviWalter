@@ -5,6 +5,7 @@
 <title>{% block title %} Iniciar Sesión {% endblock %}</title>
 
 {% block contenido %}
+
 <center>
     <form method="post">
         {% csrf_token %}
@@ -19,13 +20,14 @@
         </div>
         <br>
         <div class="container w-25">
-            {{ form | crispy }}
+            {{ form|crispy:"bootstrap5" }}
             <br>
-            <a href="{% url 'apps.users:signup' %}" style="color: black;">Todavía no estas registrado? Registrate</a>
+            <p>Todavía no estas registrado? <a href="{% url 'apps.users:signup' %}">Registrate</a></p>
             <br><br>
             <button type="submit" class="btn btn-success btn-lg px-3">Iniciar Sesión</button>
         </div>
         </section>
     </form>
 </center>
+
 {% endblock %}

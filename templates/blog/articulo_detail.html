@@ -3,6 +3,9 @@
 {% load crispy_forms_tags %}
 
 <title>{% block title %}{{ object.titulo }}{% endblock %}</title>
+{% block extra_css %}
+    <link rel="stylesheet" href="estilos_blog.css">
+{% endblock %}
 
 {% block contenido %}
 <div class="container mt-4">
@@ -55,7 +58,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="articulo_id" value="{{ object.id }}">
                         <div class="mb-3">
-                            <textarea name="texto" class="form-control" rows="4" 
+                            <textarea name="texto" class="form-control" rows="4"  required
                             placeholder="Escribe tu comentario aqui..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Publicar comentario</button>
@@ -64,12 +67,10 @@
             </div>
             {% else %}
             <div class="alert alert-info">
-                <p>Debes iniciar sesión para dejar tu comentario</p>
-                <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a>
+                Debes <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a> para dejar tu comentario
             </div>
             </center>
             {% endif %}
-        
         
             <!-- Lista de comentarios -->
             <div class="lista_comentarios">

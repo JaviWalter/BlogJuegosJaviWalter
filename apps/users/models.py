@@ -12,8 +12,8 @@ class User(AbstractUser):
     nombre = models.CharField(max_length=45, default='sin especificar')
     apellido = models.CharField(max_length=45, default='sin especificar')
     email = models.EmailField(null=False, unique=True)
-    fecha_nacimiento = models.DateField('fecha_nacimiento', default=date(2000, 1, 1))
-    es_colaborador = models.BooleanField('es_colaborador', default=False)
+    fecha_nacimiento = models.DateField(verbose_name='fecha nacimiento', default=date(2000, 1, 1))
+    es_colaborador = models.BooleanField(verbose_name='es colaborador', default=False)
     imagen = models.ImageField(null=True, blank=True, upload_to='usuario', default='usuario/user-default.jpg')
 
     def save(self, *args, **kwargs):
