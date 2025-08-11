@@ -1,5 +1,11 @@
-from django.views.generic import ListView, DetailView
-from .models import Articulo 
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Articulo, Categoria_blog, ComentarioArticulo
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
+from forms import ComentarioForm
+
 
 class ArticuloListView(ListView):
     """
@@ -8,6 +14,7 @@ class ArticuloListView(ListView):
     model = Articulo # Modelo que voy a listar
     template_name = 'blog/articulo_list.html'
     context_object_name = 'articulos' #Variable donde va la lista del queryset
+    paginate_by = 10
 
     def get_queryset(self):
         """
@@ -15,7 +22,7 @@ class ArticuloListView(ListView):
         y ordenarlos por fecha de publicación descendente.
         """
         return Articulo.objects.filter(activo=True).order_by('-fecha_publicacion', '-fecha_creacion')
-    
+
 
 class ArticuloDetailView(DetailView):
     """
@@ -27,3 +34,52 @@ class ArticuloDetailView(DetailView):
 
     def get_queryset(self):
         return Articulo.objects.filter(activo=True)
+
+
+class ArticuloCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Articulo
+    fields = ['titulo', 'subtitulo', 'contenido', 'categoria', 'imagen_principal', 'imagen_url' ]
+    template_name = 'blog/articulo_form.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.es_colaborador
+    
+    def form_valid(self, form):
+        form.instance.autor = self.request.user
+        messages.success(self.request, 'Artículo creado correctamente.')
+        return super().form_valid(form)
+
+
+class ArticuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Articulo
+    fields = ['titulo', 'subtitulo', 'contenido', 'categoria', 'imagen_principal', 'imagen_url' ]
+    template_name = 'blog/articulo_form.html'
+
+    def test_func(self):
+        articulo = self.get_object()
+        return self.request.user.is_superuser or (self.request.user.es_colaborador and articulo.autor == self.request.user)
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Artículo creado correctamente.')
+        return super().form_valid(form)
+
+
+class ArticuloDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Articulo
+    fields = ['titulo', 'subtitulo', 'contenido', 'categoria', 'imagen_principal', 'imagen_url' ]
+    template_name = 'blog/articulo_form.html'
+
+    def test_func(self):
+        articulo = self.get_object()
+        return self.request.user.is_superuser or (self.request.user.es_colaborador and articulo.autor == self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tipo_objeto'] = 'artículo'
+        context['contenido_relacionado'] = {'comentarios' : self.object.comentarios.count()}
+        return context
+
+
+def aprobar_comentario(request, pk):
+    comentario = get_object_or_404(ComentarioArticulo, pk=pk)
+    
