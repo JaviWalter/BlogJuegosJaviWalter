@@ -1,27 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<title>{% block title %}Lista de Usuarios{% endblock %}</title>
+
 {% block contenido %}
+
 <div class="container mt-4">
     <h1 class="mb-4 text-center">Listado de Usuarios</h1>
-    <hr><br>
-    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g3">
-        {% for item in usuarios %}
-        <div class="col p-2">
-            <div class="card border-success h-50">
-                <img src="{{ item.imagen.url }}" class="card-img-top">
-                <div class="card-body text-dark">
-                    <h5 class="card-title">Usuario: {{ item.username }}</h5>
-                    <p class="card-text">Nombre: {{ item.nombre }}</p>
-                    <p class="card-text">Apellido: {{ item.apellido }}</p>
-                    <p class="card-text">Email: {{ item.correo }}</p>
-                </div>
-                <div class="card-footer border-success">
-                    <a href="#" class="btn btn-primary">Eliminar {{item.username}}</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+    <hr>
+    <br>
+    <div class="teble-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in usuarios %}
+                <tr>
+                    <td>
+                        <img src="{{ item.imagen.url }}" class="rounded-circle me-2" style="height: 30px;">
+                        {{ item.username }}
+                    </td>
+                    <td>
+                        {{ item.nombre }}, {{ item. apellido }}
+                    </td>
+                    <td>
+                        item.email
+                    </td>
+                    <td>
+                        {% if item.is_superuser %}
+                        <span class="badge bg danger">Superusuario</span>
+                        {% elif %}
+                        <span class="badge bg-warnin">Colaborador</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Usuario</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'apps.users:detail_user' item.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        {% if request.user.is_superuser or request.user.es_colaborador %}
+                        <a href="{% url 'apps.users:update_user' item.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            {% if request.user.is_superuser or not item.is_superuser %}
+                            <a href="{% url 'apps.users:delete_user' item.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
+
 {% endblock %}

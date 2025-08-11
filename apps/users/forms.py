@@ -1,25 +1,40 @@
+from django import forms
 from .models import User
 from django.db import transaction
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from allauth.account.forms import ResetPasswordForm
 
 class RegisterUserForm(UserCreationForm):
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}), required=True)
 
     class Meta:
         model = User
         fields = ['username','email', 'password1', 'password2', 'nombre', 'apellido', 'fecha_nacimiento', 'imagen']
+        widgets = {'imagen' : forms.FileField(attrs={'class': 'form-control'}),}
 
     @transaction.atomic
-    def save(self):
+    def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_superuser = False
-        user.is_staff = False
-        user.save()
+        if commit:
+            user.save()
         return user
 
 
+class UpdateUserForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        Model = User
+        fields = ['username', 'email', 'nombre', 'apellido', 'fecha_nacimiento', 'imagen']
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(attrs={'type':'date'}),
+            'imagen': forms.FileField(attrs={'class': 'form-control'}),
+        }
 
 class CustomPasswordResetForm(ResetPasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Ingresa tu email aquí.',
+            })

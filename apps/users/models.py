@@ -37,11 +37,15 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-        ordering = ('-nombre',)
+        ordering = ('-date_joined', '-nombre')
         indexes = [
             models.Index(fields=['email']),
             models.Index(fields=['nombre', 'apellido']),
         ]
+        permissions = [
+            ('es_colaborador', 'Puede editar y crear contenido'),
+            ('puede_eliminar_usuario' 'Puede eliminar usuarios no superusuarios')
+        ] 
 
     def clean(self):
         if User.objects.filter(email=self.email).exclude(pk=self.pk).exists():

@@ -82,4 +82,54 @@ class ArticuloDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def aprobar_comentario(request, pk):
     comentario = get_object_or_404(ComentarioArticulo, pk=pk)
+    if request.user.has_perm('blog.aprobar_comentario'):
+        comentario.aprobado = True
+        comentario.save()
+        messages.success(request, 'Comentario aprobado.')
+    return redirect('apps.blog:detalle_articulo', pk=comentario.articulo.pk)
+
+
+class ComentarioCreateView(LoginRequiredMixin, CreateView):
+    model = ComentarioArticulo
+    form_class = ComentarioForm
+    template_name = 'blog/comentario_form.html'
+
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        form.instance.articulo_id = self.kwargs('articulo_id')
+        if self.request.user.has_perm('blog.aprobar_comentario'):
+            form.instance.aprobado = True
+            messages.success(self.request, 'Comentario publicado.')
+        else:
+            messages.success(self.request, 'Comentario enviado para aprobaión.')
+        return super().form_valid(form)
     
+    def get_success_url(self):
+        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.kwargs['articulo_id']})
+
+
+class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ComentarioArticulo
+    form_class = ComentarioForm
+    template_name = 'blog/comentario_form.html'
+
+    def test_func(self):
+        return self.get_object().puede_editar(self.request.user)
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Comentario actualizado exitosamente.')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo_pk})
+
+
+class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ComentarioArticulo
+    template_name = 'confirma_eliminar.html'
+
+    def test_func(self):
+        return self.get_object().puede_editar(self.request.user)
+    
+    def get_success_url(self):
+        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo_pk})
