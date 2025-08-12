@@ -73,6 +73,9 @@ class Juego(models.Model):
         verbose_name_plural = "Juegos"
         ordering = ['titulo'] # Ordenar por título por defecto
 
+    def plataformas_str(self):
+        return ", ".join([p.nombre for p in self.plataformas.all()])
+
     def __str__(self):
         return self.titulo
 
@@ -115,7 +118,8 @@ class ComentarioJuego(models.Model):
         db_table = 'games_comentariojuego'
         verbose_name = "Comentario"
         verbose_name_plural = "Comentarios"
-        ordering = ['-fecha_creacion'] 
+        ordering = ['-fecha_creacion']
+        permissions = [('aprobar_comentario', 'Puede aprobar comentarios')] 
 
     def __str__(self):
         return f"Comentario de {self.usuario.username} en {self.juego.titulo}"

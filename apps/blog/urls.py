@@ -1,11 +1,12 @@
 
 from django.urls import path
-from .views import ArticuloCreateView, ArticuloListView, ArticuloUpdateView, ArticuloDetailView, ArticuloDeleteView , ComentarioCreateView, ComentarioUpdateView, ComentarioDeleteView, aprobar_comentario
+from .views import ArticuloCreateView, ArticuloListView, ArticuloPorCategoriaView, ArticuloUpdateView, ArticuloDetailView, ArticuloDeleteView , ComentarioCreateView, ComentarioUpdateView, ComentarioDeleteView, aprobar_comentario
 
 app_name = 'apps.blog'
 
 urlpatterns = [
     path('', ArticuloListView.as_view(), name='lista_articulos'), # URL para mostrar todos los articulos
+    path('categoria/<str:categoria>', ArticuloPorCategoriaView.as_view(), name='articulo_por_categoria'),
     path('<int:pk>/', ArticuloDetailView.as_view(), name='detalle_articulo'),  # URL para mostrar el detalle de un artículo específico, Por ejemplo: /blog/5/
     path('crear/', ArticuloCreateView.as_view(), name='crear_articulo'),
     path('<int:pk>/editar/', ArticuloUpdateView.as_view(), name='editar_articulo'),

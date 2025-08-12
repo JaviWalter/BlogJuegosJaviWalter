@@ -11,7 +11,7 @@ urlpatterns = [
     path('<int:pk>/eliminar', JuegoDeleteView.as_view(), name='eliminar_juego'),
     
     #=======comentarios
-    path('int:juego_id>/comentar', ComentarioJuegoCreateView.as_view(), name='agregar_comentario'),
+    path('<int:juego_id>/comentar', ComentarioJuegoCreateView.as_view(), name='agregar_comentario'),
     path('comentario/<int:pk>/editar', ComentarioJuegoUpdateView.as_view(), name='editar_comentario'),
     path('comentario/<int:pk>/eliminar', ComentarioJuegoDeleteView.as_view(), name='eliminar_comentario'),
     path('comentario/<int:pk>/aprobar', aprobar_comentario, name='aprobar_comentario')

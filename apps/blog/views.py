@@ -4,7 +4,7 @@ from .models import Articulo, Categoria_blog, ComentarioArticulo
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
-from forms import ComentarioForm
+from .forms import ComentarioForm
 
 
 class ArticuloListView(ListView):
@@ -16,12 +16,27 @@ class ArticuloListView(ListView):
     context_object_name = 'articulos' #Variable donde va la lista del queryset
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_articulos'] = self.get_queryset().count()
+        return context
+
     def get_queryset(self):
         """
         Sobrescribe el queryset para filtrar solo artículos activos
         y ordenarlos por fecha de publicación descendente.
         """
         return Articulo.objects.filter(activo=True).order_by('-fecha_publicacion', '-fecha_creacion')
+
+
+class ArticuloPorCategoriaView(ListView):
+    model = Articulo # Modelo que voy a listar
+    template_name = 'blog/articulo_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        categoria = get_object_or_404(Categoria_blog, nombre=self.kwargs['categoria'])
+        return Articulo.objects.filter(categoria=categoria, activo=True).order_by('-fecha_publicacion', '-fecha_creacion')
 
 
 class ArticuloDetailView(DetailView):
@@ -32,8 +47,16 @@ class ArticuloDetailView(DetailView):
     template_name = 'blog/articulo_detail.html'
     # El nombre de la variable por defecto que se pasa a la plantilla es 'object' o 'articulo'
 
-    def get_queryset(self):
-        return Articulo.objects.filter(activo=True)
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Artículo eliminado correctamente.')
+        return super().delete(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria_blog.objects.all()
+        context['comentario_form'] = ComentarioForm()
+        context['comentarios'] = self.object.comentarios.filter(aprobado=True)
+        return context
 
 
 class ArticuloCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -60,7 +83,7 @@ class ArticuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_superuser or (self.request.user.es_colaborador and articulo.autor == self.request.user)
     
     def form_valid(self, form):
-        messages.success(self.request, 'Artículo creado correctamente.')
+        messages.success(self.request, 'Artículo actualizado correctamente.')
         return super().form_valid(form)
 
 
@@ -86,6 +109,8 @@ def aprobar_comentario(request, pk):
         comentario.aprobado = True
         comentario.save()
         messages.success(request, 'Comentario aprobado.')
+    else:
+        messages.error(request, 'No tienes permisos para aprobar comentarios')
     return redirect('apps.blog:detalle_articulo', pk=comentario.articulo.pk)
 
 
@@ -96,7 +121,7 @@ class ComentarioCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.usuario = self.request.user
-        form.instance.articulo_id = self.kwargs('articulo_id')
+        form.instance.articulo_id = self.kwargs['articulo_id']
         if self.request.user.has_perm('blog.aprobar_comentario'):
             form.instance.aprobado = True
             messages.success(self.request, 'Comentario publicado.')
@@ -121,7 +146,7 @@ class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo_pk})
+        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo.pk})
 
 
 class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -132,4 +157,4 @@ class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().puede_editar(self.request.user)
     
     def get_success_url(self):
-        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo_pk})
+        return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo.pk})

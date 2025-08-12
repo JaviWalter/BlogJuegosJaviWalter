@@ -2,17 +2,19 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from .models import User
+from django.contrib import messages
 
 # Register your models here.
 
 
-@admin.site.register(User)
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'nombre', 'apellido', 'es_colaborador', 'is_superuser', 'imagen_preview', 'fecha_nacimiento')
     list_filter = ('es_colaborador', 'is_superuser', 'is_active')
     search_fields = ('username', 'email', 'nombre', 'apellido')
     ordering = ('-date_joined',)
     filter_horizontal = ('groups', 'user_permissions',)
+    actions = ['agregar_colaborador', 'quitar_colaborador']
     
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
@@ -30,10 +32,30 @@ class CustomUserAdmin(UserAdmin):
     
     add_fieldsets = (
         (None, {
-            'classes': ('wide',),
+            'classes': ('wide'),
             'fields': ('username', 'email', 'password1', 'password2', 'nombre', 'apellido', 'fecha_nacimiento'),
         }),
     )
+
+    def agregar_colaborador(self, request, queryset):
+        """Convierte usuarios seleccionados en colaboradores."""
+        updated = queryset.update(es_colaborador=True)
+        self.message_user(
+            request,
+            f"{updated} usuario(s) marcado(s) como colaborador(es).",
+            messages.SUCCESS
+        )
+    agregar_colaborador.short_description = 'Agregar colaborador'
+
+    def quitar_colaborador(self, request, queryset):
+        """Remueve el estado de colaborador de los usuarios seleccionados."""
+        updated = queryset.update(es_colaborador=False)
+        self.message_user(
+            request,
+            f"{updated} usuario(s) ya no son colaborador(es).",
+            messages.SUCCESS
+        )
+    quitar_colaborador.short_description = 'Quitar colaborador'
     
     def imagen_preview(self, obj):
         if obj.imagen:

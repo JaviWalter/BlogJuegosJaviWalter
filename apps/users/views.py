@@ -14,6 +14,7 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = User
     template_name = 'users/list_users.html'
     context_object_name = 'usuarios'
+    paginate_by = 20
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
@@ -85,13 +86,19 @@ class CustomPasswordResetView(SuccessMessageMixin, PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'account/password_reset.html'
     success_message = 'Se ha enviado un correo con instrucciones para reestablecer su contraseña.'
-    success_url = reverse_lazy('account/login')
+    success_url = reverse_lazy('apps.users:login')
 
 class ProfileView(LoginRequiredMixin, DetailView):
     #LoginRequiredMixin asegura que solo los usuarios autenticados puedan acceder a esta vista.
     model = User
     template_name = 'users/profile.html'
     context_object_name = 'profile_user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['articulos_recientes'] = user.articulos_publicados.all()[:5]
+        return context
 
     def get_object(self,):
         return self.request.user

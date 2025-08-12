@@ -10,7 +10,7 @@ class RegisterUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username','email', 'password1', 'password2', 'nombre', 'apellido', 'fecha_nacimiento', 'imagen']
-        widgets = {'imagen' : forms.FileField(attrs={'class': 'form-control'}),}
+        widgets = {'imagen' : forms.ClearableFileInput(attrs={'class': 'form-control'}),}
 
     @transaction.atomic
     def save(self, commit=True):
@@ -24,11 +24,11 @@ class UpdateUserForm(UserChangeForm):
     password = None
 
     class Meta:
-        Model = User
+        model = User
         fields = ['username', 'email', 'nombre', 'apellido', 'fecha_nacimiento', 'imagen']
         widgets = {
             'fecha_nacimiento': forms.DateInput(attrs={'type':'date'}),
-            'imagen': forms.FileField(attrs={'class': 'form-control'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
 class CustomPasswordResetForm(ResetPasswordForm):

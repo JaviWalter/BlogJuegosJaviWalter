@@ -3,65 +3,74 @@
 {% load crispy_forms_tags %}
 
 <title>{% block title %}{{ object.titulo }}{% endblock %}</title>
+
 {% block extra_css %}
-    <link rel="stylesheet" href="estilos_blog.css">
+    <link rel="stylesheet" href="{% static 'css/estilos_blog.css' %}">
 {% endblock %}
 
 {% block contenido %}
+
 <div class="container mt-4">
     <div class="card shadow-sm p-4">
         <!-- Título del artículo -->
         <h1>{{ object.titulo }}</h1>
         {% if object.subtitulo %}
-            <p><em>{{ object.subtitulo }}</em></p>
+            <p class="lead"><em>{{ object.subtitulo }}</em></p>
         {% endif %}
 
         <!-- Metadatos del artículo -->
-        <p class="card-text">
+        <div class="d-flex justify-content-between align-content-center mb-3">
             <small class="text-muted">
                 Publicado el {{ object.fecha_publicacion|date:"d M Y" }}
                 {% if object.autor %}
-                    por {{ object.autor.username }}
+                    por <a href="{% url 'apps.users:detail_user' object.autor.pk %}">{{ object.autor.username }}</a>
                 {% endif %}
                 {% if object.categoria %}
-                    en {{ object.categoria.nombre }}
+                    en <a href="{% url 'apps.blog:articulo_por_categoria' object.categoria.nombre %}">{{ object.categoria.nombre }}</a>
                 {% endif %}
             </small>
-        </p>
+            {% if user.is_authenticated and (user == obect.autor or user == user.es_colaborador) %}
+            <div>
+                <a href="{% url 'apps.blog:editar_articulo' object.pk %}" class="btn btn-sm btn-warning">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <a href="{% url 'apps.blog:eliminar_articulo' object.pk %}" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash"></i> Eliminar
+                </a>
+            </div>
+            {% endif %}
+        </div>
 
         <hr>
 
-        <div class="contenido_articulo">
+        <div class="articulo_contenido">
             <!-- Lógica para mostrar la imagen (prioriza la URL sobre el archivo) -->
             {% if object.imagen_url %}
                 <img src="{{ object.imagen_url }}" alt="{{ object.titulo }}" class="articulo-imagen img-fluid rounded mb-3">
             {% elif object.imagen_principal %}
                 <img src="{{ object.imagen_principal.url }}" alt="{{ object.titulo }}" class="articulo-imagen img-fluid rounded mb-3">
             {% else %}
-                <img src="https://placehold.co/900x400/2980b9/ffffff?text=No+Imagen" alt="Sin imagen disponible" class="articulo-imagen img-fluid rounded mb-3">
+                <img src="https://placehold.co/900x400/2980b9/ffffff?text=Sin+Imagen" alt="Sin imagen disponible" class="articulo-imagen img-fluid rounded mb-3">
             {% endif %}
 
-            <!-- El contenido del artículo, ahora con el filtro 'linebreaks' para mantener los saltos de línea -->
-            {{ object.contenido|linebreaks }}
+            <div class="articulo_contenido">
+                <!-- El contenido del artículo, ahora con el filtro 'linebreaks' para mantener los saltos de línea -->
+                {{ object.contenido|linebreaks }}
+            </div>
         </div>
     
         <!-- Sección comentario -->
         <div class="mt-5">
             <h3>Comentarios</h3>
             <hr>
-            <center>
             {% if user.is_authentiated %}
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Deja tu comentario</h5>
-                    <form action="{% url 'apps.blog:detalle_articulo' pk=object.pk %}" method="post">
+                    <form action="{% url 'apps.blog:agrgar_comentario' object.pk %}" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="articulo_id" value="{{ object.id }}">
-                        <div class="mb-3">
-                            <textarea name="texto" class="form-control" rows="4"  required
-                            placeholder="Escribe tu comentario aqui..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                        {{ comentario_form|crispy:"bootstrap5"}}
+                        <button type="submit" class="btn btn-primary mt-2">Publicar comentario</button>
                     </form>
                 </div>
             </div>
@@ -69,7 +78,6 @@
             <div class="alert alert-info">
                 Debes <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a> para dejar tu comentario
             </div>
-            </center>
             {% endif %}
         
             <!-- Lista de comentarios -->
@@ -80,7 +88,9 @@
                         <div class="card-body">
                             <div class="d-flex juestify-content-between">
                                 <h6 class="card-subtitle mb-2 text-muted">
-                                    {{ comentario.usuario.username }}
+                                    <a href="{% url 'apps.users:datail_user' comentario.usuario.pk %}">
+                                        {{ comentario.usuario.username }}
+                                    </a>
                                     <small>{{ comentario.fecha_creacion|date:'d M Y H:i' }}</small>
                                 </h6>
                                 {% if not comentario.aprobado %}
@@ -88,6 +98,18 @@
                                 {% endif %}
                             </div>
                             <div class="card-text">{{ comentario.texto|linebreaks }}</div>
+                            {% if comentario.usuario == user or user.has_perm('blog.aprobar_comentario') %}
+                            <div class="mt-2">
+                                <a href="{% url 'apps.blog:editar_comentario' comentario.pk %}" 
+                                    class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="{% url 'apps.blog:eliminar_comentario' comentario.pk %}" 
+                                    class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}

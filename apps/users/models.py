@@ -17,22 +17,25 @@ class User(AbstractUser):
     imagen = models.ImageField(null=True, blank=True, upload_to='usuario', default='usuario/user-default.jpg')
 
     def save(self, *args, **kwargs):
-        if self.imagen:
-            img = Image.open(self.imagen)
-            img.thumbnail((300, 300))
+        if self.imagen and self.imagen.name != 'usuario/user-default.jpg':
+            try:
+                img = Image.open(self.imagen)
+                if img.height > 300 or img.width > 300:
+                    img.thumbnail((300, 300))
         
-        output = io.BytesIO()
-        img.save(output, format='JPEG', quality=85)
-        output.seek(0)
+                output = io.BytesIO()
+                img.save(output, format='JPEG', quality=85)
+                output.seek(0)
 
-        self.imagen.save(
-            self.imagen.name,
-            ContentFile(output.getvalue()),
-            save = False
-        )
-
+                self.imagen.save(
+                    self.imagen.name,
+                    ContentFile(output.getvalue()),
+                    save = False
+                )
+            except Exception as e:
+                print(f'Error procesando la imagen: {e}')
+                pass
         super().save(*args, **kwargs)
-
 
     class Meta:
         verbose_name = 'Usuario'
@@ -44,11 +47,18 @@ class User(AbstractUser):
         ]
         permissions = [
             ('es_colaborador', 'Puede editar y crear contenido'),
-            ('puede_eliminar_usuario' 'Puede eliminar usuarios no superusuarios')
+            ('puede_eliminar_usuario', 'Puede eliminar usuarios no superusuarios'),
         ] 
 
     def clean(self):
-        if User.objects.filter(email=self.email).exclude(pk=self.pk).exists():
+        super().clean()
+
+        self.email = self.email.lower().strip() if self.email else None
+
+        if self.email and '@' not in self.email:
+            raise ValidationError('Ingrese un email válido')
+        
+        if User.objects.filter(email__iexact=self.email).exclude(pk=self.pk).exists():
             raise ValidationError('Este email ya está registrado')
 
     def __str__(self):

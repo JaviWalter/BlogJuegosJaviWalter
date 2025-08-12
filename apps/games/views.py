@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Juego, ComentarioJuego
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
-from forms import ComentarioJuegoForm
+from .forms import ComentarioJuegoForm
 
 class JuegoListView(ListView):
     model = Juego
@@ -12,12 +12,23 @@ class JuegoListView(ListView):
     context_object_name = 'juegos'
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_juegos'] = self.get_queryset().count()
+        return context
+
     def get_queryset(self):
         return Juego.objects.filter(activo=True).order_by('-fecha_lanzamiento')
 
 class JuegoDetailView(DetailView):
     model = Juego
     template_name = 'games/juego_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comentario_form'] = ComentarioJuegoForm()
+        context['comentarios'] = self.object.comentarios.filter(aprobado=True)
+        return context
 
     def get_queryset(self):
         return Juego.objects.filter(activo=True)
@@ -69,10 +80,12 @@ class JuegoDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def aprobar_comentario(request, pk):
     comentario = get_object_or_404(ComentarioJuego, pk=pk)
-    if request.user.has_perm('blog.aprobar_comentario'):
+    if request.user.has_perm('games.aprobar_comentario'):
         comentario.aprobado = True
         comentario.save()
         messages.success(request, 'Comentario aprobado.')
+    else:
+        messages.error(request, 'No tienes permisos para aprobar comentarios')
     return redirect('apps.games:detalle_juego', pk=comentario.juego.pk)
 
 class ComentarioJuegoCreateView(LoginRequiredMixin, CreateView):

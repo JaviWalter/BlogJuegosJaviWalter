@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from datetime import timezone
 
 # Create your models here.
 
@@ -17,6 +18,9 @@ class Categoria_blog(models.Model):
         verbose_name = "Categoría de Blog"
         verbose_name_plural = "Categorías de Blog"
         ordering = ['nombre'] # Ordenar por nombre por defecto
+
+    def articulos_count(self):
+        return self.articulos.count()
 
     def __str__(self):
         return self.nombre
@@ -71,11 +75,16 @@ class Articulo(models.Model):
         verbose_name_plural = "Artículos"
         ordering = ['-fecha_publicacion', '-fecha_creacion'] # Ordenar por fecha de publicación descendente
 
-    def __str__(self):
-        return self.titulo
-    
+    def otener_imagen(self):
+        if self.imagen_principal:
+            return self.imagen_principal.url
+        return self.imagen_url or None
+
     def get_absolute_url(self):
         return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return self.titulo
 
 class ComentarioArticulo(models.Model):
     articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE, verbose_name="Articulo", related_name='comentarios')
@@ -86,7 +95,7 @@ class ComentarioArticulo(models.Model):
     )
     texto = models.TextField(verbose_name="Comentario")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
-    fecha_edicion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Edición")
+    fecha_edicion = models.DateTimeField(auto_now=True, verbose_name="Fecha de Edición")
     aprobado = models.BooleanField(default=False, verbose_name="Aprobado para Publicación")
 
     class Meta:

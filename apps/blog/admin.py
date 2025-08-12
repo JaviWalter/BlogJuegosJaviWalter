@@ -56,11 +56,11 @@ class ArticuloAdmin(admin.ModelAdmin):
         return "-"
     categoria_link.short_description = 'Categoría'
 
-    def imagen_previw(self, obj):
+    def imagen_preview(self, obj):
         if obj.imagen_principal:
             return format_html('<img src="{}" style="max-height: 50px;">', obj.imagen_principal.url)
         return "-"
-    imagen_previw.short_description = 'Vista previa'
+    imagen_preview.short_description = 'Vista previa'
 
     def estado(self, obj):
         return 'Publicado' if obj.activo else 'Borrador'
