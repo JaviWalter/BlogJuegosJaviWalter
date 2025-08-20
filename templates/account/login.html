@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<title>{% block title %} Iniciar Sesión {% endblock %}</title>
+
+{% block contenido %}
+
+<center>
+    <form method="post">
+        {% csrf_token %}
+        <section class="form-control" style="margin-top: 5%;">
+        <h1>Iniciar Sesión</h1>
+        <hr>
+        <br>
+        <div class="messages">
+        {% for message in messages %}
+            <table {% if message.tags %} class="{{message.tag}}" {% endif %}>{{message}}</table>
+        {% endfor %}
+        </div>
+        <br>
+        <div class="container w-25">
+            {{ form|crispy:"bootstrap5" }}
+            <br>
+            <p>Todavía no estas registrado? <a href="{% url 'apps.users:signup' %}">Registrate</a></p>
+            <br><br>
+            <button type="submit" class="btn btn-success btn-lg px-3">Iniciar Sesión</button>
+        </div>
+        </section>
+    </form>
+</center>
+
+{% endblock %}

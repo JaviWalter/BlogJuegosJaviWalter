@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Perfil de {{ user.username }}{% endblock %}</title>
+
+{% block contenido %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-ites-center">
+                        <h3 class="mb-0">Mi Perfil</h3>
+                        <a href="{% url 'apps.users:update_user' user.pk %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>Editar
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <!-- Podrías poner una imagen de perfil aquí -->
+                            <img src="{{ user.imagen.url }}" class=" img-fluid rounded-circle border border-primary p-1" alt="Foto de perfil" style="max-height: 200px;">
+                            <h4>{{ user.username }}</h4>
+                            {% if user.es_colaborador %}
+                                <span class="badge bg-warning">Colaborador</span>
+                            {% endif %}
+                            {% if user.is_superuser %}
+                                <span class="badge bg-danger">Superuser</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Nombre:</strong> {{ user.nombre }}, {{ user.apellido }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Email:</strong> {{ user.email }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Miembro desde:</strong> {{ user.date_joined|date:"d/M/Y" }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Último acceso:</strong> {{ user.last_login|date:"d/M/Y" }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'index' %}" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>Volver a Inicio
+                    </a>
+                    <a href="{% url 'apps.users:password_reset' %}" class="btn btn-info">
+                        <i class="fas fa-key"></i>Cambiar contraseña
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contenido %}

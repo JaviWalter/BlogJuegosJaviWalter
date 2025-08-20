@@ -1,0 +1,13 @@
+# Archivos de caché y de compilación
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Directorios de Django
+media/

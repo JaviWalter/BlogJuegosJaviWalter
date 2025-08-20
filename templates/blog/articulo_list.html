@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Noticias{% endblock %}</title>
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/estilos_blog.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-4">Lista de Artículos</h1>
+        {% if user.is_authenticated and user.es_colaborador %}
+        <a href="{% url 'apps.blog:crear_articulo' %}">
+            <i class="fas fa-plus"></i> Nuevo Artículo
+        </a>
+        {% endif %}
+    </div>
+    <hr class="mb-5">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for articulo in articulos %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if articulo.imagen_principal %}
+                <img src="{{ articulo.imagen_principal.url }}" class="card-img-top"
+                alt="{{ articulo.titulo }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&amp;font=montserrat" alt="Sin imagen" class="card-img-top">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title h5">
+                        <a href="{% url 'apps.blog:detalle_articulo' %}" class="text-decoration-none text-dark">
+                            {{ articulo.titulo }}
+                        </a>
+                    </h2>
+                    {% if articulo.sutitulo %}
+                    <p class="card-subtitle mb-2 text-muted">{{ articulo.subtitulo }}</p>
+                    {% endif %}
+                    <div class="card-text">
+                        <p>{{ articulo.contenido|truncatechars:30 }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">
+                            Publicado el {{ articulo.fecha_publicacion|date:"d M Y" }}
+                            {% if articulo.autor %}
+                            Por {{ articulo.autor.username }}
+                            {% endif %}
+                        </small>
+                        <span class="badge bg-primary">
+                            <i class="fas fa-comments"></i> {{ articulo.comentarios.count }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'apps.blog:detalle_articulo' pk=articulo.pk %}" class="btn btn-sm btn-outline primary">
+                        Leer más
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No hay artículos publicados en este momento
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if is.paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item ">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>    
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}" aria-current="page">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% endblock %}

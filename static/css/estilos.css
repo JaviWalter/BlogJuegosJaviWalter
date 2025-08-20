@@ -1,0 +1,32 @@
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13 110 253 0.25);
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3 ease;
+    box-shadow: 0 10px 20px rgba(0 0 0 0.1);
+}
+
+.img-thumbnail {
+    padding: 0.25rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    max-width: 100%;
+    height: auto;
+}
+
+.alert-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    min-width: 300px;
+}
