@@ -60,7 +60,7 @@ class Juego(models.Model):
     plataformas = models.ManyToManyField(Plataforma, related_name='juegos', verbose_name="Plataformas")
     generos = models.ManyToManyField(Genero, related_name='juegos', verbose_name="Géneros")
     
-    # Campo para almacenar el promedio de puntuación (se actualizará con lógica posterior)
+    # Campo para almacenar el promedio de puntuación
     promedio_puntuacion = models.DecimalField(
         max_digits=3, 
         decimal_places=2,
@@ -71,7 +71,7 @@ class Juego(models.Model):
     class Meta:
         verbose_name = "Juego"
         verbose_name_plural = "Juegos"
-        ordering = ['titulo'] # Ordenar por título por defecto
+        ordering = ['titulo']
 
     def plataformas_str(self):
         return ", ".join([p.nombre for p in self.plataformas.all()])
